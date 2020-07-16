@@ -38,7 +38,7 @@ class IntegerDivisionTest {
 		assertEquals("_101|25\n 100|--\n ---|4\n   1", getDivisionResult(101, 25));
 		assertEquals("_543|500\n 500|---\n ---|1\n  43", getDivisionResult(543, 500));
 		assertEquals("_43|500\n  0|---\n --|0\n 43", getDivisionResult(43, 500));
-		assertEquals("_4|500\n 0|---\n -|0\n 4", getDivisionResult(4, 500));
+		assertEquals("_60|50\n 50|--\n --|1\n 10", getDivisionResult(60, 50));
 	}
 
 	private String getDivisionResult(int dividend, int divisor) {
