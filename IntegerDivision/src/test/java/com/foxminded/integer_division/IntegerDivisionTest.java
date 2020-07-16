@@ -30,11 +30,12 @@ class IntegerDivisionTest {
 
 	@Test
 	void testOneStepDivision() {
-		assertEquals("_3|12\n 0|-\n -|0\n 3", getDivisionResult(3, 12));
+		assertEquals("_3|12\n 0|--\n -|0\n 3", getDivisionResult(3, 12));
 		assertEquals("_5|3\n 3|-\n -|1\n 2", getDivisionResult(5, 3));
 		assertEquals("_11|3\n  9|-\n --|3\n  2", getDivisionResult(11, 3));
-		assertEquals("_26|12\n 24|-\n --|2\n  2", getDivisionResult(26, 12));
-		assertEquals("_101|25\n 100|-\n -|4\n 1", getDivisionResult(101, 25));
+		assertEquals("_26|12\n 24|--\n --|2\n  2", getDivisionResult(26, 12));
+		
+		assertEquals("_101|25\n 100|--\n ---|4\n   1", getDivisionResult(101, 25));
 	}
 
 	private String getDivisionResult(int dividend, int divisor) {
