@@ -36,6 +36,11 @@ class IntegerDivisionTest {
 		assertEquals("_1|1\n 1|-\n --|1\n  0", getDivisionResult(1, 1));
 	}
 
+	@Test
+	void testOneStepDivisionWhenDividendIsLessThanDivisor() {
+		assertEquals("_12|13\n  0|-\n --|0\n 12", getDivisionResult(12, 13));
+	}
+
 	private String getDivisionResult(int dividend, int divisor) {
 		systemOutContent.reset();
 
