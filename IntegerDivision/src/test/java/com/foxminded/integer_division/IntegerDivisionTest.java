@@ -30,15 +30,10 @@ class IntegerDivisionTest {
 
 	@Test
 	void testOneStepDivision() {
-		assertEquals("_10|2\n 10|-\n --|5\n  0", getDivisionResult(10, 2));
-		assertEquals("_15|5\n 15|-\n --|3\n  0", getDivisionResult(15, 5));
-		assertEquals("_7|3\n 6|-\n --|2\n  1", getDivisionResult(7, 3));
-		assertEquals("_1|1\n 1|-\n --|1\n  0", getDivisionResult(1, 1));
-	}
-
-	@Test
-	void testOneStepDivisionWhenDividendIsLessThanDivisor() {
-		assertEquals("_12|13\n  0|-\n --|0\n 12", getDivisionResult(12, 13));
+		assertEquals("_3|12\n 0|-\n -|0\n 3", getDivisionResult(3, 12));
+		assertEquals("_5|3\n 3|-\n -|1\n 2", getDivisionResult(5, 3));
+		assertEquals("_11|3\n  9|-\n --|3\n  2", getDivisionResult(11, 3));
+		assertEquals("_26|12\n 24|-\n --|2\n  2", getDivisionResult(26, 12));
 	}
 
 	private String getDivisionResult(int dividend, int divisor) {
