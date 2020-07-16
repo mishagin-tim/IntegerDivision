@@ -41,6 +41,11 @@ class IntegerDivisionTest {
 		assertEquals("_60|50\n 50|--\n --|1\n 10", getDivisionResult(60, 50));
 	}
 
+	@Test
+	void testTwoStepDivision() {
+		assertEquals("_145|5\n 10 |--\n -- |29\n _45\n  45\n  --\n   0", getDivisionResult(145, 5));
+	}
+
 	private String getDivisionResult(int dividend, int divisor) {
 		systemOutContent.reset();
 
