@@ -4,53 +4,35 @@ public class IntegerDivision {
 
 	public void divide(int dividend, int divisor) {
 
-		int quotient = dividend / divisor;
-		int reminder = dividend % divisor;
-		int minuend = divisor * quotient;
-		
-		String template = getTemplate(dividend, divisor, minuend, quotient);
+		DivisionTermsParameterObject termsPO = new DivisionTermsParameterObject();
 
-		System.out.print(String.format(template, dividend, divisor, divisor * quotient, quotient,
-				reminder));
+		termsPO.dividend = dividend;
+		termsPO.divisor = divisor;
+		termsPO.quotient = dividend / divisor;
+		termsPO.minuend = divisor * termsPO.quotient;
+		termsPO.reminder = dividend % divisor;
+
+		System.out.print(getFormatedString(termsPO));
 	}
 
-	private String getTemplate(int dividend, int divisor, int minuend, int quotient) {
+	private String getFormatedString(DivisionTermsParameterObject termsPO) {
+		return String.format(getTemplate(termsPO), termsPO.dividend, termsPO.divisor, termsPO.minuend, termsPO.quotient,
+				termsPO.reminder);
+	}
+
+	private String getTemplate(DivisionTermsParameterObject termsPO) {
 		String headTemplate = "_%d|%d\n";
-		String minuendTemplate = "%d";
+		String minuendTemplate = "%d|";
 		String quotientTemplate = "|%d\n";
 		String reminderTemplate = "%d";
 
-		String resultTemplate = "";
+		String tabsBeforeMinuend = getTabsForTerm(termsPO.dividend, termsPO.minuend);
+		String lineBetweenDivisorAndQuotient = getDashesAccordingToTerms(termsPO.divisor, termsPO.quotient);
+		String dashesBeforeMinuend = getDashesAccordingToTerms(termsPO.dividend, termsPO.minuend);
+		String tabsBeforeReminder = getTabsForTerm(termsPO.dividend, termsPO.reminder);
 
-		int maxBetweenDividenAndMinuend = Math.max(dividend, minuend);
-		String templateMaxDividendMinuend = "";
-
-		if (maxBetweenDividenAndMinuend < 10) {
-			templateMaxDividendMinuend = "\n -" + quotientTemplate + " " + reminderTemplate;
-		} else if (maxBetweenDividenAndMinuend < 100) {
-			templateMaxDividendMinuend = "\n --" + quotientTemplate + "  " + reminderTemplate;
-		} else if (maxBetweenDividenAndMinuend < 1000) {
-			templateMaxDividendMinuend = "\n ---" + quotientTemplate + "   " + reminderTemplate;
-		}
-		
-		int maxBetweenDivisorAndQuotient = Math.max(divisor, quotient);
-		String templateMaxDivisorQuotient = "";
-		
-		if (maxBetweenDivisorAndQuotient < 10) {
-			templateMaxDivisorQuotient = "|-";
-		} else if (maxBetweenDivisorAndQuotient < 100) {
-			templateMaxDivisorQuotient = "|--";
-		} else if (maxBetweenDivisorAndQuotient < 1000) {
-			templateMaxDivisorQuotient = "|---";
-		}
-
-		int tabsCount = getDigitCount(dividend) + 1 - getDigitCount(minuend);
-		String tabs = generateStringWithSpaces(tabsCount);
-
-		resultTemplate = headTemplate + tabs + minuendTemplate + templateMaxDivisorQuotient
-				+ templateMaxDividendMinuend;
-
-		return resultTemplate;
+		return headTemplate + tabsBeforeMinuend + minuendTemplate + lineBetweenDivisorAndQuotient + "\n "
+				+ dashesBeforeMinuend + quotientTemplate + tabsBeforeReminder + reminderTemplate;
 	}
 
 	private int getDigitCount(int num) {
@@ -64,13 +46,34 @@ public class IntegerDivision {
 		return digitCount;
 	}
 
-	private String generateStringWithSpaces(int count) {
-		String result = "";
+	private String generateStringWithChar(int count, char c) {
+		StringBuilder builder = new StringBuilder("");
 
 		for (int i = 0; i < count; i++) {
-			result += " ";
+			builder.append(c);
 		}
 
-		return result;
+		return builder.toString();
 	}
+
+	private String getTabsForTerm(int dividend, int term) {
+		int spaceCount = getDigitCount(dividend) + 1 - getDigitCount(term);
+
+		return generateStringWithChar(spaceCount, ' ');
+	}
+
+	private String getDashesAccordingToTerms(int term1, int term2) {
+		int maxBetweenTerms = Math.max(term1, term2);
+		int digitCount = getDigitCount(maxBetweenTerms);
+
+		return generateStringWithChar(digitCount, '-');
+	}
+}
+
+class DivisionTermsParameterObject {
+	int dividend;
+	int divisor;
+	int minuend;
+	int quotient;
+	int reminder;
 }
