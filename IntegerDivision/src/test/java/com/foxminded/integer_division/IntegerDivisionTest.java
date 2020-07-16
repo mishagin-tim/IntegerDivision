@@ -33,6 +33,7 @@ class IntegerDivisionTest {
 		assertEquals("_10|2\n 10|-\n --|5\n  0", getDivisionResult(10, 2));
 		assertEquals("_15|5\n 15|-\n --|3\n  0", getDivisionResult(15, 5));
 		assertEquals("_7|3\n 6|-\n --|2\n  1", getDivisionResult(7, 3));
+		assertEquals("_1|1\n 1|-\n --|1\n  0", getDivisionResult(1, 1));
 	}
 
 	private String getDivisionResult(int dividend, int divisor) {
