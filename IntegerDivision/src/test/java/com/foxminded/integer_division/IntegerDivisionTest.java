@@ -25,6 +25,7 @@ class IntegerDivisionTest {
 		System.setOut(originalSystemOut);
 	}
 
+	@Test
 	void testOneStepDivision() {
 		assertEquals("_3|12\n 0|--\n -|0\n 3", getDivisionResult(3, 12));
 		assertEquals("_5|3\n 3|-\n -|1\n 2", getDivisionResult(5, 3));
