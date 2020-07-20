@@ -61,14 +61,14 @@ class IntegerDivision implements Iterator<IntegerDivision> {
 	private IntegerDivision(IntegerDivision obj, Stack<Integer> leftDigits) {
 		this.rootDivident = obj.rootDivident;
 		this.rootQuotient = obj.rootQuotient;
+		this.divisor = obj.divisor;
 
 		int temp = obj.reminder;
-		while (!leftDigits.isEmpty() || temp < divisor) {
+		while (!leftDigits.isEmpty() && temp < divisor) {
 			temp = temp * 10 + leftDigits.pop();
 		}
 
 		this.dividend = temp;
-		this.divisor = obj.divisor;
 		this.quotient = this.dividend / this.divisor;
 		this.reminder = this.dividend % this.divisor;
 		this.minuend = this.quotient * this.divisor;
@@ -87,43 +87,41 @@ class IntegerDivision implements Iterator<IntegerDivision> {
 	@Override
 	public String toString() {
 		
-		if (root) {
-			String headTemplate = String.format("_%d|%d\n", rootDivident, divisor);
-			String minuendTemplate = String.format("%d", minuend);
-			String quotientTemplate = String.format("|%d\n", this.rootQuotient);
-			String reminderTemplate = String.format("%d", reminder);
+		String dividendTemplate;
+		String divisorTemplate = String.format("|%d\n", divisor);
+		String minuendTemplate = String.format("%d", minuend);
+		String quotientTemplate = String.format("|%d\n", this.rootQuotient);
+		String reminderTemplate = String.format("%d", reminder);
 
-			String tabsBeforeMinuend = generateStringWithChar(this.spacesBeforeMinuend, ' ');
-			String lineBetweenDivisorAndQuotient = getDashesBetweenTerms(divisor, this.rootQuotient);
-			String dashesBeforeMinuend = getDashesBetweenTerms(dividend, minuend);
-			String tabsAfter = generateStringWithChar(spacesAfter, ' ');
-			
+		String tabsBeforeMinuend = generateStringWithChar(this.spacesBeforeMinuend, ' ');
+		String lineBetweenDivisorAndQuotient = getDashesBetweenTerms(divisor, this.rootQuotient);
+		String dashesBeforeMinuend = getDashesBetweenTerms(dividend, minuend);
+		String tabsAfter = generateStringWithChar(spacesAfter, ' ');
+		
+		String resultTemplate = divisorTemplate + tabsBeforeMinuend + minuendTemplate + tabsAfter + "|"
+				+ lineBetweenDivisorAndQuotient + "\n " + dashesBeforeMinuend + tabsAfter
+				+ quotientTemplate;
+		
+		if (root) {
+			dividendTemplate = String.format("_%d", this.rootDivident);
+			resultTemplate = dividendTemplate + resultTemplate;
 			if (hasNext()) {
 				String tabsBeforeReminder = generateStringWithChar(this.spacesBeforeReminder - 1, ' ');
-				return headTemplate + tabsBeforeMinuend + minuendTemplate + tabsAfter + "|"
-						+ lineBetweenDivisorAndQuotient + "\n " + dashesBeforeMinuend + tabsAfter + quotientTemplate
-						+ tabsBeforeReminder + next().toString();
+				resultTemplate = resultTemplate + tabsBeforeReminder + next().toString();
 			} else {
 				String tabsBeforeReminder = generateStringWithChar(this.spacesBeforeReminder, ' ');
-				return headTemplate + tabsBeforeMinuend + minuendTemplate + tabsAfter + "|"
-						+ lineBetweenDivisorAndQuotient + tabsAfter + "\n "
-						+ dashesBeforeMinuend + tabsAfter + quotientTemplate + tabsBeforeReminder + reminderTemplate
-						+ tabsAfter;
+				resultTemplate = resultTemplate + tabsBeforeReminder + reminderTemplate + tabsAfter;
 			}
+			return resultTemplate;
 
 		} else {
-			String dividendTemplate = String.format("_%d", this.dividend);
-			String minuendTemplate = String.format("%d", this.minuend);
-			String reminderTemplate = String.format("%d", this.reminder);
-
-			String tabsBeforeMinuend = generateStringWithChar(this.spacesBeforeMinuend, ' ');
-			String dashesBeforeMinuend = getDashesBetweenTerms(dividend, minuend);
-			String tabsAfter = generateStringWithChar(spacesAfter, ' ');
+			dividendTemplate = String.format("_%d", this.dividend);
+			resultTemplate = dividendTemplate + resultTemplate;
 
 			if (hasNext()) {
 				String tabsBeforeReminder = generateStringWithChar(this.spacesBeforeReminder - 1, ' ');
 				return dividendTemplate + tabsAfter + "\n" + tabsBeforeMinuend + minuendTemplate + tabsAfter + "\n"
-						+ tabsAfter + "\n" + dashesBeforeMinuend + "\n" + tabsBeforeReminder + reminderTemplate
+						+ tabsBeforeMinuend + dashesBeforeMinuend + "\n" + tabsBeforeReminder + reminderTemplate
 						+ tabsAfter + "\n" + tabsBeforeReminder + next().toString();
 			} else {
 				String tabsBeforeReminder = generateStringWithChar(this.spacesBeforeReminder, ' ');

@@ -44,6 +44,12 @@ class IntegerDivisionTest {
 		assertEquals("_1024|32\n  96 |--\n --- |32\n  _64\n   64\n   --\n    0", getDivisionResult(1024, 32));
 	}
 
+	@Test
+	void testThreeStepDivision() {
+		assertEquals("_1245|5\n 10  |---\n --  |249\n _24\n  20\n  --\n  _45\n   45\n   --\n    0",
+				getDivisionResult(1245, 5));
+	}
+
 	private String getDivisionResult(int dividend, int divisor) {
 		systemOutContent.reset();
 
