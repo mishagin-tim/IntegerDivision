@@ -1,38 +1,158 @@
 package com.foxminded.integer_division;
 
-public class IntegerDivision {
+import java.util.Iterator;
+import java.util.Stack;
 
-	public void divide(int dividend, int divisor) {
+class IntegerDivision implements Iterator<IntegerDivision> {
+	int rootDivident;
+	int rootQuotient;
+	int dividend;
+	int divisor;
+	int quotient;
+	int minuend;
+	int reminder;
+	int spacesBeforeMinuend;
+	int spacesBeforeReminder;
+	int spacesAfter;
+	IntegerDivision next = null;
+	boolean root;
 
-		DivisionTermsParameterObject termsPO = new DivisionTermsParameterObject();
+	public IntegerDivision(int dividend, int divisor) {
+		this.rootDivident = dividend;
+		this.rootQuotient = dividend / divisor;
 
-		termsPO.dividend = dividend;
-		termsPO.divisor = divisor;
-		termsPO.quotient = dividend / divisor;
-		termsPO.minuend = divisor * termsPO.quotient;
-		termsPO.reminder = dividend % divisor;
+		Stack<Integer> stack = getDigitsOfNumber(dividend);
 
-		System.out.print(getFormatedString(termsPO));
+		this.dividend = getNumberFromStack(stack, divisor);
+		this.divisor = divisor;
+		this.quotient = this.dividend / this.divisor;
+		this.reminder = this.dividend % this.divisor;
+		this.minuend = this.quotient * this.divisor;
+		this.spacesBeforeMinuend = getSpaceCountForTermAccordingToDividend(this.dividend, this.minuend);
+		this.spacesBeforeReminder = getSpaceCountForTermAccordingToDividend(this.dividend, this.reminder);
+		this.spacesAfter = getDigitCount(this.rootDivident) - spacesBeforeReminder;
+		this.root = true;
+
+		if (!stack.isEmpty()) {
+			this.next = new IntegerDivision(this, stack);
+		}
 	}
 
-	private String getFormatedString(DivisionTermsParameterObject termsPO) {
-		return String.format(getTemplate(termsPO), termsPO.dividend, termsPO.divisor, termsPO.minuend, termsPO.quotient,
-				termsPO.reminder);
+	private Stack<Integer> getDigitsOfNumber(int number) {
+		Stack<Integer> digits = new Stack<Integer>();
+
+		do {
+			digits.add(number % 10);
+			number /= 10;
+		} while (number > 0);
+
+		return digits;
 	}
 
-	private String getTemplate(DivisionTermsParameterObject termsPO) {
-		String headTemplate = "_%d|%d\n";
-		String minuendTemplate = "%d|";
-		String quotientTemplate = "|%d\n";
-		String reminderTemplate = "%d";
+	private int getNumberFromStack(Stack<Integer> digits, int divisor) {
+		int temp = 0;
+		while (!digits.isEmpty() && temp < divisor) {
+			temp = temp * 10 + digits.pop();
+		}
 
-		String tabsBeforeMinuend = getTabsForTerm(termsPO.dividend, termsPO.minuend);
-		String lineBetweenDivisorAndQuotient = getDashesAccordingToTerms(termsPO.divisor, termsPO.quotient);
-		String dashesBeforeMinuend = getDashesAccordingToTerms(termsPO.dividend, termsPO.minuend);
-		String tabsBeforeReminder = getTabsForTerm(termsPO.dividend, termsPO.reminder);
+		return temp;
+	}
 
-		return headTemplate + tabsBeforeMinuend + minuendTemplate + lineBetweenDivisorAndQuotient + "\n "
-				+ dashesBeforeMinuend + quotientTemplate + tabsBeforeReminder + reminderTemplate;
+	private IntegerDivision(IntegerDivision obj, Stack<Integer> leftDigits) {
+		this.rootDivident = obj.rootDivident;
+		this.rootQuotient = obj.rootQuotient;
+
+		int temp = obj.reminder;
+		while (!leftDigits.isEmpty() || temp < divisor) {
+			temp = temp * 10 + leftDigits.pop();
+		}
+
+		this.dividend = temp;
+		this.divisor = obj.divisor;
+		this.quotient = this.dividend / this.divisor;
+		this.reminder = this.dividend % this.divisor;
+		this.minuend = this.quotient * this.divisor;
+		this.spacesBeforeMinuend = obj.spacesBeforeMinuend
+				+ getSpaceCountForTermAccordingToDividend(this.dividend, this.minuend);
+		this.spacesBeforeReminder = obj.spacesBeforeReminder
+				+ getSpaceCountForTermAccordingToDividend(this.dividend, this.minuend);
+		this.spacesAfter = getDigitCount(this.rootDivident) - spacesBeforeReminder;
+		this.root = false;
+
+		if (!leftDigits.isEmpty()) {
+			this.next = new IntegerDivision(this, leftDigits);
+		}
+	}
+
+	@Override
+	public String toString() {
+		
+		if (root) {
+			String headTemplate = String.format("_%d|%d\n", rootDivident, divisor);
+			String minuendTemplate = String.format("%d", minuend);
+			String quotientTemplate = String.format("|%d\n", this.rootQuotient);
+			String reminderTemplate = String.format("%d", reminder);
+
+			String tabsBeforeMinuend = generateStringWithChar(this.spacesBeforeMinuend, ' ');
+			String lineBetweenDivisorAndQuotient = getDashesBetweenTerms(divisor, this.rootQuotient);
+			String dashesBeforeMinuend = getDashesBetweenTerms(dividend, minuend);
+			String tabsAfter = generateStringWithChar(spacesAfter, ' ');
+			
+			if (hasNext()) {
+				String tabsBeforeReminder = generateStringWithChar(this.spacesBeforeReminder - 1, ' ');
+				return headTemplate + tabsBeforeMinuend + minuendTemplate + tabsAfter + "|"
+						+ lineBetweenDivisorAndQuotient + "\n " + dashesBeforeMinuend + tabsAfter + quotientTemplate
+						+ tabsBeforeReminder + next().toString();
+			} else {
+				String tabsBeforeReminder = generateStringWithChar(this.spacesBeforeReminder, ' ');
+				return headTemplate + tabsBeforeMinuend + minuendTemplate + tabsAfter + "|"
+						+ lineBetweenDivisorAndQuotient + tabsAfter + "\n "
+						+ dashesBeforeMinuend + tabsAfter + quotientTemplate + tabsBeforeReminder + reminderTemplate
+						+ tabsAfter;
+			}
+
+		} else {
+			String dividendTemplate = String.format("_%d", this.dividend);
+			String minuendTemplate = String.format("%d", this.minuend);
+			String reminderTemplate = String.format("%d", this.reminder);
+
+			String tabsBeforeMinuend = generateStringWithChar(this.spacesBeforeMinuend, ' ');
+			String dashesBeforeMinuend = getDashesBetweenTerms(dividend, minuend);
+			String tabsAfter = generateStringWithChar(spacesAfter, ' ');
+
+			if (hasNext()) {
+				String tabsBeforeReminder = generateStringWithChar(this.spacesBeforeReminder - 1, ' ');
+				return dividendTemplate + tabsAfter + "\n" + tabsBeforeMinuend + minuendTemplate + tabsAfter + "\n"
+						+ tabsAfter + "\n" + dashesBeforeMinuend + "\n" + tabsBeforeReminder + reminderTemplate
+						+ tabsAfter + "\n" + tabsBeforeReminder + next().toString();
+			} else {
+				String tabsBeforeReminder = generateStringWithChar(this.spacesBeforeReminder, ' ');
+				return dividendTemplate + tabsAfter + "\n" + tabsBeforeMinuend + minuendTemplate + tabsAfter + "\n"
+						+ tabsBeforeMinuend + dashesBeforeMinuend + "\n" + tabsBeforeReminder + reminderTemplate
+						+ tabsAfter;
+			}
+		}
+	}
+
+	private String generateStringWithChar(int count, char c) {
+		StringBuilder builder = new StringBuilder("");
+
+		for (int i = 0; i < count; i++) {
+			builder.append(c);
+		}
+
+		return builder.toString();
+	}
+
+	private String getDashesBetweenTerms(int term1, int term2) {
+		int maxBetweenTerms = Math.max(term1, term2);
+		int digitCount = getDigitCount(maxBetweenTerms);
+
+		return generateStringWithChar(digitCount, '-');
+	}
+
+	private int getSpaceCountForTermAccordingToDividend(int dividend, int term) {
+		return getDigitCount(dividend) + 1 - getDigitCount(term);
 	}
 
 	private int getDigitCount(int num) {
@@ -46,34 +166,13 @@ public class IntegerDivision {
 		return digitCount;
 	}
 
-	private String generateStringWithChar(int count, char c) {
-		StringBuilder builder = new StringBuilder("");
-
-		for (int i = 0; i < count; i++) {
-			builder.append(c);
-		}
-
-		return builder.toString();
+	@Override
+	public boolean hasNext() {
+		return this.next != null;
 	}
 
-	private String getTabsForTerm(int dividend, int term) {
-		int spaceCount = getDigitCount(dividend) + 1 - getDigitCount(term);
-
-		return generateStringWithChar(spaceCount, ' ');
+	@Override
+	public IntegerDivision next() {
+		return this.next;
 	}
-
-	private String getDashesAccordingToTerms(int term1, int term2) {
-		int maxBetweenTerms = Math.max(term1, term2);
-		int digitCount = getDigitCount(maxBetweenTerms);
-
-		return generateStringWithChar(digitCount, '-');
-	}
-}
-
-class DivisionTermsParameterObject {
-	int dividend;
-	int divisor;
-	int minuend;
-	int quotient;
-	int reminder;
 }

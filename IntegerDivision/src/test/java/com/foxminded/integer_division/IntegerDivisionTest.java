@@ -13,13 +13,10 @@ class IntegerDivisionTest {
 	private final ByteArrayOutputStream systemOutContent = new ByteArrayOutputStream();
 	private final PrintStream originalSystemOut = System.out;
 
-	private IntegerDivision divider;
-
 	/* Handle standard output stream with ByteArrayOutputStream */
 	@BeforeEach
 	void setUpStreams() {
 		System.setOut(new PrintStream(systemOutContent));
-		divider = new IntegerDivision();
 	}
 
 	/* Restore standard output stream */
@@ -28,7 +25,6 @@ class IntegerDivisionTest {
 		System.setOut(originalSystemOut);
 	}
 
-	@Test
 	void testOneStepDivision() {
 		assertEquals("_3|12\n 0|--\n -|0\n 3", getDivisionResult(3, 12));
 		assertEquals("_5|3\n 3|-\n -|1\n 2", getDivisionResult(5, 3));
@@ -44,12 +40,14 @@ class IntegerDivisionTest {
 	@Test
 	void testTwoStepDivision() {
 		assertEquals("_145|5\n 10 |--\n -- |29\n _45\n  45\n  --\n   0", getDivisionResult(145, 5));
+		assertEquals("_144|12\n 12 |--\n -- |12\n _24\n  24\n  --\n   0", getDivisionResult(144, 12));
+		assertEquals("_1024|32\n  96 |--\n --- |32\n  _64\n   64\n   --\n    0", getDivisionResult(1024, 32));
 	}
 
 	private String getDivisionResult(int dividend, int divisor) {
 		systemOutContent.reset();
 
-		divider.divide(dividend, divisor);
+		System.out.print(new IntegerDivision(dividend, divisor));
 
 		return systemOutContent.toString();
 	}
