@@ -1,25 +1,27 @@
 package com.foxminded.integer_division;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-class IntegerDivision implements Iterator<IntegerDivision> {
-	int rootDivident;
+public class IntegerDivisionIterator {
+	int rootDividend;
 	int rootQuotient;
+	
 	int dividend;
 	int divisor;
 	int quotient;
 	int minuend;
 	int reminder;
+	
 	int spacesBeforeMinuend;
 	int spacesBeforeReminder;
 	int spacesAfterReminder;
-	IntegerDivision next = null;
+	
+	IntegerDivisionIterator next;
 	boolean root;
 
-	public IntegerDivision(int dividend, int divisor) {
-		this.rootDivident = dividend;
+	public IntegerDivisionIterator(int dividend, int divisor) {
+		this.rootDividend = dividend;
 		this.rootQuotient = dividend / divisor;
 
 		Stack<Integer> stack = getDigitsOfNumber(dividend);
@@ -31,17 +33,24 @@ class IntegerDivision implements Iterator<IntegerDivision> {
 		this.minuend = this.quotient * this.divisor;
 		this.spacesBeforeMinuend = getSpaceCountForTermAccordingToDividend(this.dividend, this.minuend);
 		this.spacesBeforeReminder = getSpaceCountForTermAccordingToDividend(this.dividend, this.reminder);
-		this.spacesAfterReminder = getSpaceCountForTermAccordingToDividend(this.rootDivident, this.reminder)
+
+		this.spacesAfterReminder = getSpaceCountForTermAccordingToDividend(this.rootDividend, this.reminder)
 				- spacesBeforeReminder;
 		this.root = true;
 
 		if (!stack.isEmpty()) {
-			this.next = new IntegerDivision(this, stack);
+			this.spacesBeforeReminder--;
+			this.next = new IntegerDivisionIterator(this, stack);
 		}
 	}
+	
+	private boolean isLastStepOfDivision() {
+		return (getDigitCount(rootDividend) + 1 - spacesBeforeReminder
+				- getDigitCount(reminder) == 0);
+	}
 
-	private IntegerDivision(IntegerDivision obj, Stack<Integer> leftDigits) {
-		this.rootDivident = obj.rootDivident;
+	private IntegerDivisionIterator(IntegerDivisionIterator obj, Stack<Integer> leftDigits) {
+		this.rootDividend = obj.rootDividend;
 		this.rootQuotient = obj.rootQuotient;
 		this.divisor = obj.divisor;
 
@@ -57,12 +66,19 @@ class IntegerDivision implements Iterator<IntegerDivision> {
 		this.spacesBeforeMinuend = obj.spacesBeforeMinuend
 				+ getSpaceCountForTermAccordingToDividend(this.dividend, this.minuend);
 		this.spacesBeforeReminder = obj.spacesBeforeReminder
-				+ getSpaceCountForTermAccordingToDividend(this.dividend, this.minuend);
-		this.spacesAfterReminder = getDigitCount(this.rootDivident) - spacesBeforeReminder;
+				+ getSpaceCountForTermAccordingToDividend(this.dividend, this.reminder);
+
+		this.spacesBeforeReminder = obj.spacesBeforeReminder
+				+ getSpaceCountForTermAccordingToDividend(this.dividend, this.reminder);
+		this.spacesAfterReminder = getDigitCount(this.rootDividend) - spacesBeforeReminder;
 		this.root = false;
 
+		if (getDigitCount(this.rootDividend) + 1 - spacesBeforeReminder - getDigitCount(reminder) > 0) {
+			this.spacesBeforeReminder--;
+		}
+
 		if (!leftDigits.isEmpty()) {
-			this.next = new IntegerDivision(this, leftDigits);
+			this.next = new IntegerDivisionIterator(this, leftDigits);
 		}
 	}
 
@@ -99,11 +115,12 @@ class IntegerDivision implements Iterator<IntegerDivision> {
 		String dashesBetweenDivisorAndQuotient = getDashesBetweenTerms(divisor, this.rootQuotient);
 		String dashesBetweenMinuendAndReminder = getDashesBetweenTerms(dividend, minuend);
 		String tabsAfter = generateStringWithChar(spacesAfterReminder, ' ');
+		String tabsBeforeReminder = generateStringWithChar(this.spacesBeforeReminder, ' ');
 
 		String resultTemplate = "";
 		
 		if (root) {
-			dividendTemplate = String.format("_%d", this.rootDivident);
+			dividendTemplate = String.format("_%d", this.rootDividend);
 			resultTemplate = dividendTemplate + divisorTemplate + tabsBeforeMinuend + minuendTemplate + tabsAfter
 					+ "|" + dashesBetweenDivisorAndQuotient + "\n " + dashesBetweenMinuendAndReminder + tabsAfter + quotientTemplate;
 		} else {
@@ -112,11 +129,9 @@ class IntegerDivision implements Iterator<IntegerDivision> {
 					+ tabsBeforeMinuend + dashesBetweenMinuendAndReminder + "\n";
 		}
 
-		if (hasNext()) {
-			String tabsBeforeReminder = generateStringWithChar(this.spacesBeforeReminder - 1, ' ');
-			resultTemplate = resultTemplate + tabsBeforeReminder + next().toString();
+		if (hasNextDivisionStep()) {
+			resultTemplate = resultTemplate + tabsBeforeReminder + nextDivisionStep().toString();
 		} else {
-			String tabsBeforeReminder = generateStringWithChar(this.spacesBeforeReminder, ' ');
 			resultTemplate = resultTemplate + tabsBeforeReminder + reminderTemplate;
 		}
 
@@ -155,14 +170,12 @@ class IntegerDivision implements Iterator<IntegerDivision> {
 		return digitCount;
 	}
 
-	@Override
-	public boolean hasNext() {
+	public boolean hasNextDivisionStep() {
 		return this.next != null;
 	}
 
-	@Override
-	public IntegerDivision next() {
-		if (!hasNext()) {
+	public IntegerDivisionIterator nextDivisionStep() {
+		if (!hasNextDivisionStep()) {
 			throw new NoSuchElementException("No more steps of division");
 		}
 		return this.next;

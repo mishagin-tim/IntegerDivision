@@ -12,11 +12,12 @@ import org.junit.jupiter.api.Test;
 class IntegerDivisionTest {
 	private final ByteArrayOutputStream systemOutContent = new ByteArrayOutputStream();
 	private final PrintStream originalSystemOut = System.out;
-
+	private IntegerDivider divider;
 	/* Handle standard output stream with ByteArrayOutputStream */
 	@BeforeEach
 	void setUpStreams() {
 		System.setOut(new PrintStream(systemOutContent));
+		this.divider = new IntegerDivider();
 	}
 
 	/* Restore standard output stream */
@@ -54,7 +55,8 @@ class IntegerDivisionTest {
 	private String getDivisionResult(int dividend, int divisor) {
 		systemOutContent.reset();
 
-		System.out.print(new IntegerDivision(dividend, divisor));
+		// DivisionBuffer divisionBuffer = divider.divide(dividend, divisor);
+		System.out.print(divider.divide(dividend, divisor));
 
 		return systemOutContent.toString();
 	}
