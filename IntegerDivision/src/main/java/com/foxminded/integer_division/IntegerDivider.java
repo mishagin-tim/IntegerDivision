@@ -19,7 +19,6 @@ public class IntegerDivider {
 class DivisionIterator {
 	
 	private static final String VALUE_TEMPLATE = "%d";
-	
 	private static final String NEW_LINE = "\n";
 	private static final String DELIMITER = "|";
 	private static final String DASH = "_";
@@ -40,6 +39,11 @@ class DivisionIterator {
 	private String rawRepresentation;
 
 	DivisionIterator(int dividend, int divisor) {
+		
+		if (divisor == 0) {
+			throw new IllegalArgumentException("Divisor can't be zero");
+		}
+		
 		this.rootDividend = dividend;
 		this.rootDivisor = divisor;
 		this.rootQuotient = this.rootDividend / this.rootDivisor;
@@ -67,6 +71,7 @@ class DivisionIterator {
 		int dividend = getNumberFromStack();
 		int quotient = dividend / rootDivisor;
 		int minuend = quotient * rootDivisor;
+
 		reminder = dividend % rootDivisor;
 
 		spaceCountBeforeReminder = spaceCountBeforeReminder
@@ -117,6 +122,16 @@ class DivisionIterator {
 			addSpacesBeforeReminder();
 			addReminder(reminder);
 		}
+	}
+
+	private int getNumberFromStack() {
+		int temp = this.reminder;
+
+		while (!digitsOfRootDividend.isEmpty() && temp < this.rootDivisor) {
+			temp = temp * 10 + digitsOfRootDividend.pop();
+		}
+
+		return temp;
 	}
 
 	private boolean isRoot() {
@@ -180,16 +195,6 @@ class DivisionIterator {
 	private void addDashesBetweenMinuendAndReminder(int dividend, int minuend) {
 		rawRepresentation = rawRepresentation
 				+ getDashesBetweenTerms(dividend, minuend);
-	}
-
-	private int getNumberFromStack() {
-		int temp = this.reminder;
-
-		while (!digitsOfRootDividend.isEmpty() && temp < this.rootDivisor) {
-			temp = temp * 10 + digitsOfRootDividend.pop();
-		}
-
-		return temp;
 	}
 
 	private int getSpaceCountForTermAccordingToDividend(int dividend, int term) {
