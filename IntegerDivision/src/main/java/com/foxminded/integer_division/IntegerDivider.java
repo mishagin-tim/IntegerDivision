@@ -37,8 +37,6 @@ class DivisionIterator {
 	private int spaceCountAfterReminder;
 	private int spaceCountBeforeDashesBetweenMinuendAndReminder;
 
-	private boolean isRoot;
-
 	private String rawRepresentation;
 
 	DivisionIterator(int dividend, int divisor) {
@@ -49,8 +47,6 @@ class DivisionIterator {
 		this.rawRepresentation = "";
 
 		this.digitsOfRootDividend = getDigitsOfNumber(this.rootDividend);
-
-		this.isRoot = true;
 	}
 
 	@Override
@@ -83,9 +79,10 @@ class DivisionIterator {
 
 		spaceCountAfterReminder = getSpaceCountForTermAccordingToDividend(rootDividend, reminder)
 				- spaceCountBeforeReminder;
+		
+		addDash();
 
-		if (isRoot) {
-			addDash();
+		if (isRoot()) {
 			addDividend(rootDividend);
 			addDelimiter();
 			addDivisor(rootDivisor);
@@ -101,18 +98,7 @@ class DivisionIterator {
 			addSpacesAfterReminder();
 			addDelimiter();
 			addQuotient(rootQuotient);
-			addNewLine();
-
-			if (hasNextDivisionStep()) {
-				spaceCountBeforeReminder--;
-				addSpacesBeforeReminder();
-			} else {
-				addSpacesBeforeReminder();
-				addReminder(reminder);
-			}
-
 		} else {
-			addDash();
 			addDividend(dividend);
 			addNewLine();
 			addSpacesBeforeMinuend();
@@ -120,17 +106,21 @@ class DivisionIterator {
 			addNewLine();
 			addSpacesBeforeMinuend();
 			addDashesBetweenMinuendAndReminder(dividend, minuend);
-			addNewLine();
-			
-			if (hasNextDivisionStep()) {
-				spaceCountBeforeReminder--;
-				addSpacesBeforeReminder();
-			} else {
-				addSpacesBeforeReminder();
-				addReminder(reminder);
-			}
 		}
-		isRoot = false;
+
+		addNewLine();
+
+		if (hasNextDivisionStep()) {
+			spaceCountBeforeReminder--;
+			addSpacesBeforeReminder();
+		} else {
+			addSpacesBeforeReminder();
+			addReminder(reminder);
+		}
+	}
+
+	private boolean isRoot() {
+		return spaceCountBeforeDashesBetweenMinuendAndReminder == 1;
 	}
 
 	private void addDividend(int dividend) {
