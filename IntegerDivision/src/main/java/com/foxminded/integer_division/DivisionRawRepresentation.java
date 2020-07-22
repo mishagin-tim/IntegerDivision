@@ -1,6 +1,6 @@
 package com.foxminded.integer_division;
 
-public class DivisionStepRenderer {
+public class DivisionRawRepresentation {
 	private static final String VALUE_TEMPLATE = "%d";
 	private static final String NEW_LINE = "\n";
 	private static final String DELIMITER = "|";
@@ -8,8 +8,14 @@ public class DivisionStepRenderer {
 
 	private String rawRepresentation = "";
 
-	String render(boolean isRoot, boolean hasNextDivisionStep, int rootDividend, int rootDivisor, int dividend,
+	public DivisionRawRepresentation(String rawRepresentation) {
+		this.rawRepresentation = rawRepresentation;
+	}
+
+	DivisionRawRepresentation(boolean isRoot, boolean hasNextDivisionStep, int rootDividend, int rootDivisor,
+			int dividend,
 			int spaceCountBeforeReminder) {
+
 		int rootQuotient = rootDividend / rootDivisor;
 		int quotient = dividend / rootDivisor;
 		int minuend = quotient * rootDivisor;
@@ -19,7 +25,6 @@ public class DivisionStepRenderer {
 				+ getSpaceCountForTermAccordingToDividend(dividend, minuend);
 		int spaceCountBeforeDashes = spaceCountBeforeReminder
 				+ getSpaceCountForTermAccordingToDividend(dividend, dividend);
-
 		spaceCountBeforeReminder = spaceCountBeforeReminder
 				+ getSpaceCountForTermAccordingToDividend(dividend, dividend % rootDivisor);
 
@@ -63,7 +68,14 @@ public class DivisionStepRenderer {
 			addSpaces(spaceCountBeforeReminder);
 			add(reminder);
 		}
+	}
 
+	public DivisionRawRepresentation concat(DivisionRawRepresentation divisionRawRepresentation) {
+		return new DivisionRawRepresentation(rawRepresentation + divisionRawRepresentation.toString());
+	}
+
+	@Override
+	public String toString() {
 		return rawRepresentation;
 	}
 

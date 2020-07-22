@@ -13,7 +13,7 @@ public class DivisionIterator {
 
 	private int spaceCountBeforeReminder;
 
-	private String rawRepresentation;
+	private DivisionRawRepresentation rawRepresentation;
 
 	private boolean isRoot = true;
 
@@ -26,10 +26,11 @@ public class DivisionIterator {
 		this.rootDividend = dividend;
 		this.rootDivisor = divisor;
 
-		this.rawRepresentation = "";
+		this.rawRepresentation = new DivisionRawRepresentation("");
 
 		this.digitsOfRootDividend = getDigitsOfNumber(this.rootDividend);
 	}
+
 
 	public boolean hasNextDivisionStep() {
 		return !digitsOfRootDividend.isEmpty();
@@ -43,9 +44,8 @@ public class DivisionIterator {
 
 		int dividend = getNumberFromStack();
 
-		DivisionStepRenderer stepRenderer = new DivisionStepRenderer();
-		rawRepresentation = rawRepresentation + stepRenderer.render(isRoot, hasNextDivisionStep(), rootDividend,
-				rootDivisor, dividend, spaceCountBeforeReminder);
+		rawRepresentation = rawRepresentation.concat(new DivisionRawRepresentation(isRoot, hasNextDivisionStep(),
+				rootDividend, rootDivisor, dividend, spaceCountBeforeReminder));
 
 		reminder = dividend % rootDivisor;
 
@@ -60,7 +60,18 @@ public class DivisionIterator {
 
 	@Override
 	public String toString() {
-		return rawRepresentation;
+		return rawRepresentation.toString();
+	}
+	
+	private Stack<Integer> getDigitsOfNumber(int number) {
+		Stack<Integer> digits = new Stack<>();
+
+		do {
+			digits.add(number % 10);
+			number /= 10;
+		} while (number > 0);
+
+		return digits;
 	}
 
 	private int getNumberFromStack() {
@@ -78,17 +89,6 @@ public class DivisionIterator {
 	}
 
 	private int getDigitCount(int num) {
-		return getDigitsOfNumber(num).size();
-	}
-
-	private Stack<Integer> getDigitsOfNumber(int number) {
-		Stack<Integer> digits = new Stack<>();
-
-		do {
-			digits.add(number % 10);
-			number /= 10;
-		} while (number > 0);
-
-		return digits;
+		return String.valueOf(num).length();
 	}
 }
