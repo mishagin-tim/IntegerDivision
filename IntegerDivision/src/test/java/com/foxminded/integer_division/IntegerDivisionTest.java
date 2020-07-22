@@ -1,6 +1,7 @@
 package com.foxminded.integer_division;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -27,6 +28,14 @@ class IntegerDivisionTest {
 	}
 
 	@Test
+	void divideShouldThrowIllegalArgumentExceptionWhenDivisorIsZero() {
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+			getDivisionResult(123, 0);
+		});
+		assertEquals(exception.getMessage(), "Divisor can't be zero");
+	}
+
+	@Test
 	void testOneStepDivision() {
 		assertEquals("_3|12\n 0|--\n -|0\n 3", getDivisionResult(3, 12));
 		assertEquals("_5|3\n 3|-\n -|1\n 2", getDivisionResult(5, 3));
@@ -47,9 +56,42 @@ class IntegerDivisionTest {
 	}
 
 	@Test
-	void testThreeStepDivision() {
+	void testMultipleStepDivision() {
 		assertEquals("_1245|5\n 10  |---\n --  |249\n _24\n  20\n  --\n  _45\n   45\n   --\n    0",
 				getDivisionResult(1245, 5));
+		
+		assertEquals("_135151512|241\n" + 
+				" 1205     |------\n" 
+				+ 
+				" ----     |560794\n" + 
+				" _1465\n" + 
+				"  1446\n" + 
+				"  ----\n" + 
+				"   _1915\n" + 
+				"    1687\n" + 
+				"    ----\n" + 
+				"    _2281\n" + 
+				"     2169\n" + 
+				"     ----\n" + 
+				"     _1122\n" + 
+				"       964\n" + 
+				"      ----\n" + 
+				"       158", getDivisionResult(135151512, 241));
+
+		assertEquals("_8742965|1334\n" + 
+				" 8004   |----\n"
+				+ 
+				" ----   |6553\n" + 
+				" _7389\n" + 
+				"  6670\n" + 
+				"  ----\n" + 
+				"  _7196\n" + 
+				"   6670\n" + 
+				"   ----\n" + 
+				"   _5265\n" + 
+				"    4002\n" + 
+				"    ----\n" + 
+				"    1263", getDivisionResult(8742965, 1334));
 	}
 
 	private String getDivisionResult(int dividend, int divisor) {

@@ -31,12 +31,14 @@ class DivisionIterator {
 
 	private int reminder;
 
-	private int spaceCountBeforeMinuend;
+	private int spaceCountBeforeMinuend = 1;
 	private int spaceCountBeforeReminder;
 	private int spaceCountAfterReminder;
-	private int spaceCountBeforeDashesBetweenMinuendAndReminder;
+	private int spaceCountBeforeDashes = 1;
 
 	private String rawRepresentation;
+
+	private boolean isRoot = true;
 
 	DivisionIterator(int dividend, int divisor) {
 		
@@ -73,21 +75,20 @@ class DivisionIterator {
 		int minuend = quotient * rootDivisor;
 
 		reminder = dividend % rootDivisor;
+		
+		spaceCountBeforeMinuend = spaceCountBeforeReminder + getSpaceCountForTermAccordingToDividend(dividend, minuend);
+
+		spaceCountBeforeDashes = spaceCountBeforeReminder + getSpaceCountForTermAccordingToDividend(dividend, dividend);
 
 		spaceCountBeforeReminder = spaceCountBeforeReminder
 				+ getSpaceCountForTermAccordingToDividend(dividend, reminder);
-		
-		spaceCountBeforeMinuend = spaceCountBeforeMinuend
-				+ getSpaceCountForTermAccordingToDividend(dividend, minuend);
-
-		spaceCountBeforeDashesBetweenMinuendAndReminder++;
 
 		spaceCountAfterReminder = getSpaceCountForTermAccordingToDividend(rootDividend, reminder)
 				- spaceCountBeforeReminder;
-		
-		addDash();
 
-		if (isRoot()) {
+		addDash();
+		
+		if (isRoot) {
 			addDividend(rootDividend);
 			addDelimiter();
 			addDivisor(rootDivisor);
@@ -109,7 +110,7 @@ class DivisionIterator {
 			addSpacesBeforeMinuend();
 			addMinuend(minuend);
 			addNewLine();
-			addSpacesBeforeMinuend();
+			addSpacesBeforeDashesBetweenMinuendAndReminder();
 			addDashesBetweenMinuendAndReminder(dividend, minuend);
 		}
 
@@ -118,6 +119,7 @@ class DivisionIterator {
 		if (hasNextDivisionStep()) {
 			spaceCountBeforeReminder--;
 			addSpacesBeforeReminder();
+			isRoot = false;
 		} else {
 			addSpacesBeforeReminder();
 			addReminder(reminder);
@@ -132,10 +134,6 @@ class DivisionIterator {
 		}
 
 		return temp;
-	}
-
-	private boolean isRoot() {
-		return spaceCountBeforeDashesBetweenMinuendAndReminder == 1;
 	}
 
 	private void addDividend(int dividend) {
@@ -180,7 +178,7 @@ class DivisionIterator {
 
 	private void addSpacesBeforeDashesBetweenMinuendAndReminder() {
 		rawRepresentation = rawRepresentation
-				+ generateStringWithChar(spaceCountBeforeDashesBetweenMinuendAndReminder, ' ');
+				+ generateStringWithChar(spaceCountBeforeDashes, ' ');
 	}
 
 	private void addSpacesAfterReminder() {
