@@ -68,15 +68,16 @@ class DivisionIterator {
 		int dividend = getNumberFromStack();
 		int quotient = dividend / rootDivisor;
 		int minuend = quotient * rootDivisor;
-		reminder = dividend % rootDivisor;
-		
-		spaceCountBeforeMinuend = spaceCountBeforeReminder + getSpaceCountForTermAccordingToDividend(dividend, minuend);
 
-		spaceCountBeforeDashes = spaceCountBeforeReminder + getSpaceCountForTermAccordingToDividend(dividend, dividend);
+		spaceCountBeforeMinuend = spaceCountBeforeReminder 
+				+ getSpaceCountForTermAccordingToDividend(dividend, minuend);
+		spaceCountBeforeDashes = spaceCountBeforeReminder 
+				+ getSpaceCountForTermAccordingToDividend(dividend, dividend);
+
+		reminder = dividend % rootDivisor;
 
 		spaceCountBeforeReminder = spaceCountBeforeReminder
 				+ getSpaceCountForTermAccordingToDividend(dividend, reminder);
-
 		spaceCountAfterReminder = getSpaceCountForTermAccordingToDividend(rootDividend, reminder)
 				- spaceCountBeforeReminder;
 
