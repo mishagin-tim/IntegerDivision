@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,16 @@ class IntegerDivisionTest {
 			getDivisionResult(123, 0);
 		});
 		assertEquals(exception.getMessage(), "Divisor can't be zero");
+	}
+
+	@Test
+	void testDivisionIteratorShouldThrowNoSuchElementExceptionWhenHasNoMoreDivisionSteps() {
+		NoSuchElementException e = assertThrows(NoSuchElementException.class, () -> {
+			DivisionIterator iterator = divider.divide(10, 2);
+			iterator.nextDivisionStep();
+		});
+
+		assertEquals(e.getMessage(), "No more division steps");
 	}
 
 	@Test
