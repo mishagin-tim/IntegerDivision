@@ -26,7 +26,6 @@ public class IntegerDivision {
 
 			int dividend = divisionIterator.getDividend();
 			int minuend = divisionIterator.getMinuend();
-			int reminder = divisionIterator.getReminder();
 
 			int spaceCountBeforeMinuend = divisionIterator.getSpaceCountBeforeMinuend();
 			int spaceCountBeforeDashes = divisionIterator.getSpaceCountBeforeDashes();
@@ -64,14 +63,11 @@ public class IntegerDivision {
 			}
 
 			addNewLine();
-
-			if (divisionIterator.hasNextDivisionStep()) {
-				addSpaces(spaceCountBeforeReminder);
-			} else {
-				addSpaces(spaceCountBeforeReminder);
-				add(reminder);
-			}
+			addSpaces(spaceCountBeforeReminder);
 		}
+
+		int reminder = divisionIterator.getReminder();
+		add(reminder);
 	}
 
 	@Override
