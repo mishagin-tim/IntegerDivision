@@ -16,6 +16,10 @@ public class IntegerDivision {
 		divide();
 	}
 
+	public void printDivision() {
+		System.out.print(rawRepresentation);
+	}
+
 	private void divide() {
 		while (divisionIterator.hasNextDivisionStep()) {
 			divisionIterator.nextDivisionStep();
@@ -70,10 +74,6 @@ public class IntegerDivision {
 		add(reminder);
 	}
 
-	@Override
-	public String toString() {
-		return rawRepresentation;
-	}
 
 	private String getDashesBetweenTerms(int term1, int term2) {
 		int maxBetweenTerms = Math.max(term1, term2);

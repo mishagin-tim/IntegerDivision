@@ -221,7 +221,8 @@ class IntegerDivisionTest {
 	private String getDivisionResult(int dividend, int divisor) {
 		systemOutContent.reset();
 
-		System.out.print(new IntegerDivision(dividend, divisor));
+		IntegerDivision integerDivision = new IntegerDivision(dividend, divisor);
+		integerDivision.printDivision();
 
 		return systemOutContent.toString();
 	}
