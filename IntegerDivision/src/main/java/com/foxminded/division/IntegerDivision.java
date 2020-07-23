@@ -1,4 +1,4 @@
-package com.foxminded.integer_division;
+package com.foxminded.division;
 
 public class IntegerDivision {
 	private static final String VALUE_TEMPLATE = "%d";

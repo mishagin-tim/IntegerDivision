@@ -1,4 +1,4 @@
-package com.foxminded.integer_division;
+package com.foxminded.division;
 
 import java.util.NoSuchElementException;
 import java.util.Stack;

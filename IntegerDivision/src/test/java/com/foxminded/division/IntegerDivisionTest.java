@@ -1,4 +1,4 @@
-package com.foxminded.integer_division;
+package com.foxminded.division;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
