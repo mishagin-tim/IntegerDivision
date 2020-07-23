@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,12 +13,11 @@ import org.junit.jupiter.api.Test;
 class IntegerDivisionTest {
 	private final ByteArrayOutputStream systemOutContent = new ByteArrayOutputStream();
 	private final PrintStream originalSystemOut = System.out;
-	private IntegerDivider divider;
+
 	/* Handle standard output stream with ByteArrayOutputStream */
 	@BeforeEach
 	void setUpStreams() {
 		System.setOut(new PrintStream(systemOutContent));
-		this.divider = new IntegerDivider();
 	}
 
 	/* Restore standard output stream */
@@ -34,16 +32,6 @@ class IntegerDivisionTest {
 			getDivisionResult(123, 0);
 		});
 		assertEquals(exception.getMessage(), "Divisor can't be zero");
-	}
-
-	@Test
-	void testDivisionIteratorShouldThrowNoSuchElementExceptionWhenHasNoMoreDivisionSteps() {
-		NoSuchElementException e = assertThrows(NoSuchElementException.class, () -> {
-			DivisionIterator iterator = divider.divide(10, 2);
-			iterator.nextDivisionStep();
-		});
-
-		assertEquals(e.getMessage(), "No more division steps");
 	}
 
 	@Test
@@ -182,8 +170,7 @@ class IntegerDivisionTest {
 	private String getDivisionResult(int dividend, int divisor) {
 		systemOutContent.reset();
 
-		// DivisionBuffer divisionBuffer = divider.divide(dividend, divisor);
-		System.out.print(divider.divide(dividend, divisor));
+		System.out.print(new IntegerDivision(dividend, divisor));
 
 		return systemOutContent.toString();
 	}

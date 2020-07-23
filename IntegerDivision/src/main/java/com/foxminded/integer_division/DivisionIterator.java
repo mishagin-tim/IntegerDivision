@@ -8,14 +8,17 @@ public class DivisionIterator {
 
 	private int rootDividend;
 	private int rootDivisor;
+	private int rootQuotient;
 
+	private int dividend;
+	private int quotient;
+	private int minuend;
 	private int reminder;
 
+	private int spaceCountBeforeMinuend;
+	private int spaceCountBeforeDashes;
 	private int spaceCountBeforeReminder;
-
-	private DivisionRawRepresentation rawRepresentation;
-
-	private boolean isRoot = true;
+	private int spaceCountAfterReminder;
 
 	DivisionIterator(int dividend, int divisor) {
 
@@ -23,12 +26,11 @@ public class DivisionIterator {
 			throw new IllegalArgumentException("Divisor can't be zero");
 		}
 
-		this.rootDividend = dividend;
-		this.rootDivisor = divisor;
+		rootDividend = dividend;
+		rootDivisor = divisor;
+		rootQuotient = dividend / divisor;
 
-		this.rawRepresentation = new DivisionRawRepresentation("");
-
-		this.digitsOfRootDividend = getDigitsOfNumber(this.rootDividend);
+		digitsOfRootDividend = getDigitsOfNumber(this.rootDividend);
 	}
 
 
@@ -42,25 +44,23 @@ public class DivisionIterator {
 			throw new NoSuchElementException("No more division steps");
 		}
 
-		int dividend = getNumberFromStack();
-
-		rawRepresentation = rawRepresentation.concat(new DivisionRawRepresentation(isRoot, hasNextDivisionStep(),
-				rootDividend, rootDivisor, dividend, spaceCountBeforeReminder));
-
+		dividend = getNumberFromStack();
+		quotient = dividend / rootDivisor;
+		minuend = quotient * rootDivisor;
 		reminder = dividend % rootDivisor;
 
+		spaceCountBeforeMinuend = spaceCountBeforeReminder 
+				+ getSpaceCountForTermAccordingToDividend(dividend, minuend);
+		spaceCountBeforeDashes = spaceCountBeforeReminder 
+				+ getSpaceCountForTermAccordingToDividend(dividend, dividend);
 		spaceCountBeforeReminder = spaceCountBeforeReminder
-				+ getSpaceCountForTermAccordingToDividend(dividend, reminder);
+				+ getSpaceCountForTermAccordingToDividend(dividend, dividend % rootDivisor);
+		spaceCountAfterReminder = getSpaceCountForTermAccordingToDividend(rootDividend, dividend % rootDivisor)
+				- spaceCountBeforeReminder;
 
 		if (hasNextDivisionStep()) {
 			spaceCountBeforeReminder--;
-			isRoot = false;
 		}
-	}
-
-	@Override
-	public String toString() {
-		return rawRepresentation.toString();
 	}
 	
 	private Stack<Integer> getDigitsOfNumber(int number) {
@@ -90,5 +90,49 @@ public class DivisionIterator {
 
 	private int getDigitCount(int num) {
 		return String.valueOf(num).length();
+	}
+
+	int getRootDividend() {
+		return rootDividend;
+	}
+
+	int getRootDivisor() {
+		return rootDivisor;
+	}
+
+	int getRootQuotient() {
+		return rootQuotient;
+	}
+
+	int getDividend() {
+		return dividend;
+	}
+
+	int getQuotient() {
+		return quotient;
+	}
+
+	int getMinuend() {
+		return minuend;
+	}
+
+	int getReminder() {
+		return reminder;
+	}
+
+	int getSpaceCountBeforeMinuend() {
+		return spaceCountBeforeMinuend;
+	}
+
+	int getSpaceCountBeforeDashes() {
+		return spaceCountBeforeDashes;
+	}
+
+	int getSpaceCountBeforeReminder() {
+		return spaceCountBeforeReminder;
+	}
+
+	int getSpaceCountAfterReminder() {
+		return spaceCountAfterReminder;
 	}
 }
